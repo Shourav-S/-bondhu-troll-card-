@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ফেসবুক ট্রোল কার্ড জেনারেটর</title>
+    <!-- Card Download Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
+
+        body { 
+            background: #090d16; 
+            color: #fff; 
+            padding: 15px; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+        }
+
+        .app-container { width: 100%; max-width: 400px; margin: 0 auto; }
+
+        .header-banner { text-align: center; margin-bottom: 20px; }
+        .fire-badge { background: #ff4757; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; }
+        .header-banner h1 { font-size: 1.5rem; color: #ffb142; margin-top: 5px; }
+        .header-banner p { font-size: 0.85rem; color: #a4b0be; }
+
+        .form-card { 
+            background: #1e272e; 
+            padding: 20px; 
+            border-radius: 16px; 
+            border: 1px solid #353b48; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .input-field { margin-bottom: 15px; }
+        .input-field label { display: block; font-size: 0.85rem; color: #dcdde1; margin-bottom: 6px; font-weight: 600; }
+
+        input[type="text"], select { 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 10px; 
+            border: 1px solid #485460; 
+            background: #0d1117; 
+            color: #fff; 
+            outline: none; 
+            font-size: 0.95rem; 
+        }
+
+        input[type="file"] { width: 100%; color: #808e9b; font-size: 0.85rem; }
+
+        .generate-btn, .download-btn { 
+            width: 100%; 
+            background: linear-gradient(45deg, #ff9f1a, #ff5252); 
+            color: #fff; 
+            border: none; 
+            padding: 14px; 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4); 
+            transition: 0.2s;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #10ac84, #1dd1a1);
+            box-shadow: 0 4px 15px rgba(29, 209, 161, 0.4);
+            margin-top: 15px;
+        }
+
+        .result-section { margin-top: 25px; display: none; }
+
+        .viral-card { 
+            background: linear-gradient(145deg, #130f40, #0c2461); 
+            border: 2px solid #f8c291; 
+            border-radius: 20px; 
+            padding: 20px; 
+            text-align: center; 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        }
+
+        .card-top { display: flex; justify-content: space-between; font-size: 0.75rem; color: #f8c291; margin-bottom: 15px; font-weight: bold; }
+
+        .avatar-wrapper { 
+            width: 110px; 
+            height: 110px; 
+            margin: 0 auto 12px; 
+            border-radius: 50%; 
+            border: 3px solid #e1b12c; 
+            overflow: hidden; 
+            background: #2f3542;
+        }
+        .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+        #card-name { font-size: 1.4rem; color: #fff; font-weight: 700; margin-bottom: 4px; }
+
+        .badge { 
+            display: inline-block; 
+            background: #e1b12c; 
+            color: #0c2461; 
+            padding: 4px 15px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            font-size: 0.85rem; 
+            margin-bottom: 12px; 
+        }
+
+        .description { 
+            background: rgba(0, 0, 0, 0.35); 
+            padding: 12px; 
+            border-radius: 10px; 
+            font-size: 0.9rem; 
+            line-height: 1.4; 
+            color: #dcdde1; 
+        }
+
+        .card-bottom { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-top: 15px; 
+            padding-top: 10px; 
+            border-top: 1px dashed rgba(255,255,255,0.2); 
+        }
+
+        .stamp { border: 2px solid #eb4d4b; color: #eb4d4b; font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+        .barcode { letter-spacing: 2px; font-size: 0.7rem; color: #718093; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-banner">
+        <span class="fire-badge">🔥 VIRAL CARD GENERATOR</span>
+        <h1>ফেসবুক ট্রোল কার্ড জেনারেটর</h1>
+        <p>নাম এবং ছবি দিয়ে চরম ফানি ট্রোল কার্ড তৈরি করুন</p>
+    </div>
+
+    <div class="form-card">
+        <div class="input-field">
+            <label>বন্ধুর নাম লিখুন:</label>
+            <input type="text" id="name" placeholder="যেমন: আবির / শুভ" />
+        </div>
+
+        <div class="input-field">
+            <label>ক্যাটাগরি বাছাই করুন:</label>
+            <select id="category">
+                <option value="single">💔 চিরকুমার পরিষদ সভাপতি</option>
+                <option value="balpakna">🧠 বিশ্বসেরা প্যাকপ্যাক/বালপাকনা বিশেষজ্ঞ</option>
+                <option value="treat">🍕 আজীবন ট্রিটপ্রার্থী (ফ্রি খোর)</option>
+                <option value="cheater">🎭 সেরা রিলেশনশিপ স্ক্যামার</option>
+                <option value="backstabber">🐍 পিঠে ছুরি মারা বাঁশখোর বন্ধু</option>
+                <option value="studious">📚 'পড়ি নাই' বলে জিপিএ-৫ পাওয়া ভণ্ড</option>
+                <option value="kettro">💸 মানিব্যাগ শূন্য কৃপণ মহা মানব</option>
+                <option value="ex">💔 ছ্যাঁকা খেয়ে দেউলিয়া দেবদাস</option>
+                <option value="late">⏰ আন্তর্জাতিক লেট লতিফ</option>
+                <option value="vab">😎 ভাব মারার অঘোষিত কিং</option>
+                <option value="tea">☕ জাতীয় চা-খোর গ্যাং</option>
+                <option value="sleep">😴 ২৪ ঘণ্টা ঘুম বিলাসী</option>
+            </select>
+        </div>
+
+        <div class="input-field">
+            <label>ছবি আপলোড করুন (ঐচ্ছিক):</label>
+            <input type="file" id="photo-input" accept="image/*" />
+        </div>
+
+        <button type="button" id="btn-generate" class="generate-btn">✨ কার্ড তৈরি করুন</button>
+    </div>
+
+    <div class="result-section" id="preview-area">
+        <div class="viral-card" id="viralCard">
+            <div class="card-top">
+                <div>FunCardBD</div>
+                <div>ID: #TRL-2026</div>
+            </div>
+
+            <div class="avatar-wrapper">
+                <img id="card-img" src="" alt="Avatar">
+            </div>
+
+            <h2 id="card-name">নাম</h2>
+            <div class="badge" id="card-badge">ক্যাটাগরি</div>
+            <p class="description" id="card-desc">বিবরণ</p>
+
+            <div class="card-bottom">
+                <div class="stamp">সত্যায়িত ট্রোল</div>
+                <div class="barcode">||| | |||| | |||</div>
+            </div>
+        </div>
+
+        <button type="button" id="btn-download" class="download-btn">📥 ছবি ডাউনলোড করুন</button>
+    </div>
+</div>
+
+<script>
+    const trollData = {
+        single: { badge: "💔 চিরকুমার পরিষদ সভাপতি", desc: "ইনি প্রেম করার চেয়ে বন্ধুদের সিঙ্গেল থাকার উপদেশ দিতে সবচেয়ে বেশি ভালোবাসেন!", defaultImg: "https://cdn-icons-png.flaticon.com/512/4140/4140048.png" },
+        balpakna: { badge: "🧠 বিশ্বসেরা প্যাকপ্যাক বিশেষজ্ঞ", desc: "পৃথিবীর যেকোনো বিষয়ে বিন্দুমাত্র ধারণা না থাকলেও সারাদিন প্যাকপ্যাক করে জ্ঞান দেওয়াই এনার মূল কাজ!", defaultImg: "https://cdn-icons-png.flaticon.com/512/3048/3048122.png" },
+        treat: { badge: "🍕 আজীবন ট্রিটপ্রার্থী", desc: "নিজের পকেটে টাকা থাকলেও বন্ধুদের থেকে ফ্রি ট্রিট আদায় করাই এনার প্রধান উদ্দেশ্য!", defaultImg: "https://cdn-icons-png.flaticon.com/512/2553/2553691.png" },
+        cheater: { badge: "🎭 সেরা রিলেশনশিপ স্ক্যামার", desc: "একসাথে ৩-৪ জনকে 'তুমি ছাড়া আমার জীবনে কেউ নাই' বলে পটানোর আন্তর্জাতিক ট্রেইনার!", defaultImg: "https://cdn-icons-png.flaticon.com/512/1000/1000996.png" },
+        backstabber: { badge: "🐍 পিঠে ছুরি মারা বন্ধু", desc: "সামনে খুব ভালো মিষ্টি ভাই ভাই, আর পেছনে সুযোগ পেলেই চরম বাঁশ দেওয়ার ওস্তাদ!", defaultImg: "https://cdn-icons-png.flaticon.com/512/3062/3062331.png" },
+        studious: { badge: "📚 রেজাল্ট ফাটানো ভণ্ড", desc: "পরীক্ষার আগের রাতে কান্নাকাটি করে বলবে 'কিছুই পড়ি নাই', আর রেজাল্টের দিন ঠিকই জিপিএ-৫ পাবে!", defaultImg: "https://cdn-icons-png.flaticon.com/512/2997/2997295.png" },
+        kettro: { badge: "💸 মানিব্যাগ শূন্য কৃপণ মানব", desc: "দোকানে বিল দেওয়ার সময় ওয়ালেট না পাওয়ার ভান করতে এনার চেয়ে বড় শিল্পী আর নেই!", defaultImg: "https://cdn-icons-png.flaticon.com/512/2454/2454271.png" },
+        ex: { badge: "💔 ছ্যাঁকা খেয়ে দেউলিয়া দেবদাস", desc: "রাত ৩টায় স্যাড মিউজিক শুনে স্ট্যাটাস দেন—'সবাই চলে যায়, কেউ কাছে থাকে না!'", defaultImg: "https://cdn-icons-png.flaticon.com/512/2583/2583200.png" },
+        late: { badge: "⏰ আন্তর্জাতিক লেট লতিফ", desc: "আড্ডা শুরু হওয়ার ২ ঘণ্টা পর মেসেজ দিয়ে বলবেন—'ভাই আর ৫ মিনিট, বের হচ্ছি!'", defaultImg: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" },
+        vab: { badge: "😎 ভাব মারার অঘোষিত কিং", desc: "পকেটে ১০ টাকা না থাকলেও ভাব মারার বিষয়ে এনার সাথে কেউ পেরে উঠবে না!", defaultImg: "https://cdn-icons-png.flaticon.com/512/3135/3135789.png" },
+        tea: { badge: "☕ জাতীয় চা-খোর গ্যাং", desc: "রক্তের জায়গায় এনার শরীরে চা প্রবাহিত হয়। দিনে ১০ কাপ না হলে জীবন অর্থহীন!", defaultImg: "https://cdn-icons-png.flaticon.com/512/924/924514.png" },
+        sleep: { badge: "😴 ২৪ ঘণ্টা ঘুম বিলাসী", desc: "১৬ ঘণ্টা ঘুমানোর পর বাকি সময়টা ভাবেন আবার কখন ঘুমাতে যাবেন!", defaultImg: "https://cdn-icons-png.flaticon.com/512/3094/3094833.png" }
+    };
+
+    document.getElementById('btn-generate').addEventListener('click', function () {
+        const nameInput = document.getElementById('name').value.trim();
+        const category = document.getElementById('category').value;
+        const fileInput = document.getElementById('photo-input');
+
+        if (!nameInput) {
+            alert('দয়া করে প্রথমে একটি নাম লিখুন!');
+            return;
+        }
+
+        const data = trollData[category];
+        document.getElementById('card-name').textContent = nameInput;
+        document.getElementById('card-badge').textContent = data.badge;
+        document.getElementById('card-desc').textContent = data.desc;
+
+        const cardImg = document.getElementById('card-img');
+
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                cardImg.src = e.target.result;
+                document.getElementById('preview-area').style.display = 'block';
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            cardImg.src = data.defaultImg;
+            document.getElementById('preview-area').style.display = 'block';
+        }
+    });
+
+    document.getElementById('btn-download').addEventListener('click', function () {
+        const cardContainer = document.getElementById('viralCard');
+        html2canvas(cardContainer, { useCORS: true, allowTaint: true, scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'troll-card.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    });
+</script>
+
+</body>
+</html>
