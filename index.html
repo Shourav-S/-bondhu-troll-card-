@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ফেসবুক ট্রোল কার্ড জেনারেটর</title>
     
-    <!-- HTML2Canvas CDN Library -->
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <!-- GoatCounter Analytics Code -->
+    <script data-goatcounter="https://shourav.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
+    <!-- Card Download Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
 
         body { 
             background: #090d16; 
@@ -23,9 +28,9 @@
         .app-container { width: 100%; max-width: 400px; margin: 0 auto; }
 
         .header-banner { text-align: center; margin-bottom: 20px; }
-        .fire-badge { background: #ff4757; font-size: 0.75rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; }
-        .header-banner h1 { font-size: 1.5rem; color: #ffb142; margin-top: 8px; }
-        .header-banner p { font-size: 0.85rem; color: #a4b0be; margin-top: 4px; }
+        .fire-badge { background: #ff4757; font-size: 0.7rem; font-weight: bold; padding: 3px 10px; border-radius: 20px; }
+        .header-banner h1 { font-size: 1.5rem; color: #ffb142; margin-top: 5px; }
+        .header-banner p { font-size: 0.85rem; color: #a4b0be; }
 
         .form-card { 
             background: #1e272e; 
@@ -36,7 +41,7 @@
         }
 
         .input-field { margin-bottom: 15px; }
-        .input-field label { display: block; font-size: 0.85rem; color: #dcdde1; margin-bottom: 6px; font-weight: bold; }
+        .input-field label { display: block; font-size: 0.85rem; color: #dcdde1; margin-bottom: 6px; font-weight: 600; }
 
         input[type="text"], select { 
             width: 100%; 
@@ -62,6 +67,7 @@
             border-radius: 10px; 
             cursor: pointer; 
             box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4); 
+            transition: 0.2s;
             margin-top: 10px;
             display: block;
         }
@@ -74,44 +80,48 @@
 
         .result-section { margin-top: 25px; display: none; }
 
-        /* কার্ডের মেইন ডিজাইন */
         .viral-card { 
-            background: #0c2461; 
-            border: 3px solid #f8c291; 
+            background: linear-gradient(145deg, #130f40, #0c2461); 
+            border: 2px solid #f8c291; 
             border-radius: 20px; 
             padding: 20px; 
             text-align: center; 
+            position: relative; 
+            overflow: hidden; 
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
 
         .card-top { display: flex; justify-content: space-between; font-size: 0.75rem; color: #f8c291; margin-bottom: 15px; font-weight: bold; }
 
         .avatar-wrapper { 
-            width: 120px; 
-            height: 120px; 
+            width: 110px; 
+            height: 110px; 
             margin: 0 auto 12px; 
             border-radius: 50%; 
-            border: 4px solid #e1b12c; 
+            border: 3px solid #e1b12c; 
             overflow: hidden; 
             background: #2f3542;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
-        #card-name { font-size: 1.5rem; color: #fff; font-weight: bold; margin-bottom: 8px; }
+        #card-name { font-size: 1.4rem; color: #fff; font-weight: 700; margin-bottom: 4px; }
 
         .badge { 
             display: inline-block; 
             background: #e1b12c; 
             color: #0c2461; 
-            padding: 6px 16px; 
+            padding: 4px 15px; 
             border-radius: 20px; 
-            font-weight: bold; 
+            font-weight: 700; 
             font-size: 0.85rem; 
             margin-bottom: 12px; 
         }
 
         .description { 
-            background: rgba(0, 0, 0, 0.4); 
+            background: rgba(0, 0, 0, 0.35); 
             padding: 12px; 
             border-radius: 10px; 
             font-size: 0.9rem; 
@@ -130,17 +140,6 @@
 
         .stamp { border: 2px solid #eb4d4b; color: #eb4d4b; font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
         .barcode { letter-spacing: 2px; font-size: 0.7rem; color: #718093; }
-
-        .tip-box {
-            background: #1e272e;
-            border: 1px solid #1dd1a1;
-            color: #1dd1a1;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-top: 12px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -162,7 +161,7 @@
             <label>ক্যাটাগরি বাছাই করুন:</label>
             <select id="category">
                 <option value="single">💔 চিরকুমার পরিষদ সভাপতি</option>
-                <option value="balpakna">🧠 বিশ্বসেরা প্যাকপ্যাক/বালপাকনা специалист</option>
+                <option value="balpakna">🧠 বিশ্বসেরা প্যাকপ্যাক/বালপাকনা বিশেষজ্ঞ</option>
                 <option value="treat">🍕 আজীবন ট্রিটপ্রার্থী (ফ্রি খোর)</option>
                 <option value="cheater">🎭 সেরা রিলেশনশিপ স্ক্যামার</option>
                 <option value="backstabber">🐍 পিঠে ছুরি মারা বাঁশখোর বন্ধু</option>
@@ -185,7 +184,6 @@
     </div>
 
     <div class="result-section" id="preview-area">
-        <!-- আসল কার্ড ডোম -->
         <div class="viral-card" id="viralCard">
             <div class="card-top">
                 <div>FunCardBD</div>
@@ -206,19 +204,14 @@
             </div>
         </div>
 
-        <button type="button" id="btn-download" class="download-btn">📥 ছবি গ্যালারিতে সেভ করুন</button>
-        
-        <div class="tip-box">
-            💡 <strong>টিপস:</strong> ডিরেক্ট ডাউনলোড না হলে ডাউনলোডের পর আসা ছবির ওপর চেপে ধরে (Long Press) <strong>Save Image</strong> দিন।
-        </div>
+        <button type="button" id="btn-download" class="download-btn">📥 ছবি ডাউনলোড করুন</button>
     </div>
 </div>
 
 <script>
-    // ডিফল্ট ডামি অ্যাভাটার (Base64)
-    var defaultSVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%232f3542'/><circle cx='50' cy='35' r='20' fill='%23e1b12c'/><path d='M20,85 C20,65 30,55 50,55 C70,55 80,65 80,85 Z' fill='%23e1b12c'/></svg>";
+    const defaultSVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2f2f3542'/%3E%3Ccircle cx='50' cy='35' r='20' fill='%2fe1b12c'/%3E%3Cpath d='M20,85 C20,65 30,55 50,55 C70,55 80,65 80,85 Z' fill='%2fe1b12c'/%3E%3C/svg%3E";
 
-    var trollData = {
+    const trollData = {
         single: { badge: "💔 চিরকুমার পরিষদ সভাপতি", desc: "ইনি প্রেম করার চেয়ে বন্ধুদের সিঙ্গেল থাকার উপদেশ দিতে সবচেয়ে বেশি ভালোবাসেন!" },
         balpakna: { badge: "🧠 বিশ্বসেরা প্যাকপ্যাক বিশেষজ্ঞ", desc: "পৃথিবীর যেকোনো বিষয়ে বিন্দুমাত্র ধারণা না থাকলেও সারাদিন প্যাকপ্যাক করে জ্ঞান দেওয়াই এনার মূল কাজ!" },
         treat: { badge: "🍕 আজীবন ট্রিটপ্রার্থী", desc: "নিজের পকেটে টাকা থাকলেও বন্ধুদের থেকে ফ্রি ট্রিট আদায় করাই এনার প্রধান উদ্দেশ্য!" },
@@ -234,24 +227,24 @@
     };
 
     document.getElementById('btn-generate').addEventListener('click', function () {
-        var nameInput = document.getElementById('name').value.trim();
-        var category = document.getElementById('category').value;
-        var fileInput = document.getElementById('photo-input');
+        const nameInput = document.getElementById('name').value.trim();
+        const category = document.getElementById('category').value;
+        const fileInput = document.getElementById('photo-input');
 
         if (!nameInput) {
             alert('দয়া করে প্রথমে একটি নাম লিখুন!');
             return;
         }
 
-        var data = trollData[category];
+        const data = trollData[category];
         document.getElementById('card-name').textContent = nameInput;
         document.getElementById('card-badge').textContent = data.badge;
         document.getElementById('card-desc').textContent = data.desc;
 
-        var cardImg = document.getElementById('card-img');
+        const cardImg = document.getElementById('card-img');
 
         if (fileInput.files && fileInput.files[0]) {
-            var reader = new FileReader();
+            const reader = new FileReader();
             reader.onload = function(e) {
                 cardImg.src = e.target.result;
                 document.getElementById('preview-area').style.display = 'block';
@@ -264,19 +257,39 @@
     });
 
     document.getElementById('btn-download').addEventListener('click', function () {
-        var downloadBtn = this;
-        downloadBtn.textContent = '⏳ প্রসেসিং হচ্ছে...';
-
-        var cardElement = document.getElementById('viralCard');
-
-        html2canvas(cardElement, {
+        const downloadBtn = this;
+        downloadBtn.textContent = '⏳ ছবি রেডি হচ্ছে...';
+        
+        const cardContainer = document.getElementById('viralCard');
+        
+        html2canvas(cardContainer, { 
+            useCORS: true, 
+            allowTaint: true, 
             scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            logging: false
-        }).then(function (canvas) {
-            downloadBtn.textContent = '📥 ছবি গ্যালারিতে সেভ করুন';
-
-            var imageURI = canvas.toDataURL('image/png');
+            backgroundColor: null
+        }).then(canvas => {
+            downloadBtn.textContent = '📥 ছবি ডাউনলোড করুন';
+            const imgData = canvas.toDataURL('image/png');
             
-            // ডাইরেক্ট ডাউনলোড লিংক ট্র
+            // Open full image in new tab/window for easy saving across all mobile browsers
+            const newTab = window.open();
+            if (newTab) {
+                newTab.document.write('<p style="color:#fff;background:#000;padding:10px;text-align:center;">ছবির ওপর চেপে ধরে রেখে Save Image চাপুন</p><img src="' + imgData + '" style="width:100%;height:auto;"/>');
+            } else {
+                // Fallback direct download
+                const link = document.createElement('a');
+                link.download = 'troll-card.png';
+                link.href = imgData;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }).catch(err => {
+            downloadBtn.textContent = '📥 ছবি ডাউনলোড করুন';
+            alert('ছবি তৈরিতে সমস্যা হয়েছে! অনুগ্রহ করে আবার চেষ্টা করুন।');
+        });
+    });
+</script>
+
+</body>
+</html>
