@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ফেসবুক ট্রোল কার্ড জেনারেটর</title>
+    
+    <!-- GoatCounter Analytics Code -->
+    <script data-goatcounter="https://shourav.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
     <!-- Card Download Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
 
@@ -96,6 +101,9 @@
             border: 3px solid #e1b12c; 
             overflow: hidden; 
             background: #2f3542;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -201,19 +209,22 @@
 </div>
 
 <script>
+    // Inline SVG Data URI for default avatar to avoid CORS issue in html2canvas
+    const defaultSVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2f2f3542'/%3E%3Ccircle cx='50' cy='35' r='20' fill='%2fe1b12c'/%3E%3Cpath d='M20,85 C20,65 30,55 50,55 C70,55 80,65 80,85 Z' fill='%2fe1b12c'/%3E%3C/svg%3E";
+
     const trollData = {
-        single: { badge: "💔 চিরকুমার পরিষদ সভাপতি", desc: "ইনি প্রেম করার চেয়ে বন্ধুদের সিঙ্গেল থাকার উপদেশ দিতে সবচেয়ে বেশি ভালোবাসেন!", defaultImg: "https://cdn-icons-png.flaticon.com/512/4140/4140048.png" },
-        balpakna: { badge: "🧠 বিশ্বসেরা প্যাকপ্যাক বিশেষজ্ঞ", desc: "পৃথিবীর যেকোনো বিষয়ে বিন্দুমাত্র ধারণা না থাকলেও সারাদিন প্যাকপ্যাক করে জ্ঞান দেওয়াই এনার মূল কাজ!", defaultImg: "https://cdn-icons-png.flaticon.com/512/3048/3048122.png" },
-        treat: { badge: "🍕 আজীবন ট্রিটপ্রার্থী", desc: "নিজের পকেটে টাকা থাকলেও বন্ধুদের থেকে ফ্রি ট্রিট আদায় করাই এনার প্রধান উদ্দেশ্য!", defaultImg: "https://cdn-icons-png.flaticon.com/512/2553/2553691.png" },
-        cheater: { badge: "🎭 সেরা রিলেশনশিপ স্ক্যামার", desc: "একসাথে ৩-৪ জনকে 'তুমি ছাড়া আমার জীবনে কেউ নাই' বলে পটানোর আন্তর্জাতিক ট্রেইনার!", defaultImg: "https://cdn-icons-png.flaticon.com/512/1000/1000996.png" },
-        backstabber: { badge: "🐍 পিঠে ছুরি মারা বন্ধু", desc: "সামনে খুব ভালো মিষ্টি ভাই ভাই, আর পেছনে সুযোগ পেলেই চরম বাঁশ দেওয়ার ওস্তাদ!", defaultImg: "https://cdn-icons-png.flaticon.com/512/3062/3062331.png" },
-        studious: { badge: "📚 রেজাল্ট ফাটানো ভণ্ড", desc: "পরীক্ষার আগের রাতে কান্নাকাটি করে বলবে 'কিছুই পড়ি নাই', আর রেজাল্টের দিন ঠিকই জিপিএ-৫ পাবে!", defaultImg: "https://cdn-icons-png.flaticon.com/512/2997/2997295.png" },
-        kettro: { badge: "💸 মানিব্যাগ শূন্য কৃপণ মানব", desc: "দোকানে বিল দেওয়ার সময় ওয়ালেট না পাওয়ার ভান করতে এনার চেয়ে বড় শিল্পী আর নেই!", defaultImg: "https://cdn-icons-png.flaticon.com/512/2454/2454271.png" },
-        ex: { badge: "💔 ছ্যাঁকা খেয়ে দেউলিয়া দেবদাস", desc: "রাত ৩টায় স্যাড মিউজিক শুনে স্ট্যাটাস দেন—'সবাই চলে যায়, কেউ কাছে থাকে না!'", defaultImg: "https://cdn-icons-png.flaticon.com/512/2583/2583200.png" },
-        late: { badge: "⏰ আন্তর্জাতিক লেট লতিফ", desc: "আড্ডা শুরু হওয়ার ২ ঘণ্টা পর মেসেজ দিয়ে বলবেন—'ভাই আর ৫ মিনিট, বের হচ্ছি!'", defaultImg: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" },
-        vab: { badge: "😎 ভাব মারার অঘোষিত কিং", desc: "পকেটে ১০ টাকা না থাকলেও ভাব মারার বিষয়ে এনার সাথে কেউ পেরে উঠবে না!", defaultImg: "https://cdn-icons-png.flaticon.com/512/3135/3135789.png" },
-        tea: { badge: "☕ জাতীয় চা-খোর গ্যাং", desc: "রক্তের জায়গায় এনার শরীরে চা প্রবাহিত হয়। দিনে ১০ কাপ না হলে জীবন অর্থহীন!", defaultImg: "https://cdn-icons-png.flaticon.com/512/924/924514.png" },
-        sleep: { badge: "😴 ২৪ ঘণ্টা ঘুম বিলাসী", desc: "১৬ ঘণ্টা ঘুমানোর পর বাকি সময়টা ভাবেন আবার কখন ঘুমাতে যাবেন!", defaultImg: "https://cdn-icons-png.flaticon.com/512/3094/3094833.png" }
+        single: { badge: "💔 চিরকুমার পরিষদ সভাপতি", desc: "ইনি প্রেম করার চেয়ে বন্ধুদের সিঙ্গেল থাকার উপদেশ দিতে সবচেয়ে বেশি ভালোবাসেন!" },
+        balpakna: { badge: "🧠 বিশ্বসেরা প্যাকপ্যাক বিশেষজ্ঞ", desc: "পৃথিবীর যেকোনো বিষয়ে বিন্দুমাত্র ধারণা না থাকলেও সারাদিন প্যাকপ্যাক করে জ্ঞান দেওয়াই এনার মূল কাজ!" },
+        treat: { badge: "🍕 আজীবন ট্রিটপ্রার্থী", desc: "নিজের পকেটে টাকা থাকলেও বন্ধুদের থেকে ফ্রি ট্রিট আদায় করাই এনার প্রধান উদ্দেশ্য!" },
+        cheater: { badge: "🎭 সেরা রিলেশনশিপ স্ক্যামার", desc: "একসাথে ৩-৪ জনকে 'তুমি ছাড়া আমার জীবনে কেউ নাই' বলে পটানোর আন্তর্জাতিক ট্রেইনার!" },
+        backstabber: { badge: "🐍 পিঠে ছুরি মারা বন্ধু", desc: "সামনে খুব ভালো মিষ্টি ভাই ভাই, আর পেছনে সুযোগ পেলেই চরম বাঁশ দেওয়ার ওস্তাদ!" },
+        studious: { badge: "📚 রেজাল্ট ফাটানো ভণ্ড", desc: "পরীক্ষার আগের রাতে কান্নাকাটি করে বলবে 'কিছুই পড়ি নাই', আর রেজাল্টের দিন ঠিকই জিপিএ-৫ পাবে!" },
+        kettro: { badge: "💸 মানিব্যাগ শূন্য কৃপণ মানব", desc: "দোকানে বিল দেওয়ার সময় ওয়ালেট না পাওয়ার ভান করতে এনার চেয়ে বড় শিল্পী আর নেই!" },
+        ex: { badge: "💔 ছ্যাঁকা খেয়ে দেউলিয়া দেবদাস", desc: "রাত ৩টায় স্যাড মিউজিক শুনে স্ট্যাটাস দেন—'সবাই চলে যায়, কেউ কাছে থাকে না!'" },
+        late: { badge: "⏰ আন্তর্জাতিক লেট লতিফ", desc: "আড্ডা শুরু হওয়ার ২ ঘণ্টা পর মেসেজ দিয়ে বলবেন—'ভাই আর ৫ মিনিট, বের হচ্ছি!'" },
+        vab: { badge: "😎 ভাব মারার অঘোষিত কিং", desc: "পকেটে ১০ টাকা না থাকলেও ভাব মারার বিষয়ে এনার সাথে কেউ পেরে উঠবে না!" },
+        tea: { badge: "☕ জাতীয় চা-খোর গ্যাং", desc: "রক্তের জায়গায় এনার শরীরে চা প্রবাহিত হয়। দিনে ১০ কাপ না হলে জীবন অর্থহীন!" },
+        sleep: { badge: "😴 ২৪ ঘণ্টা ঘুম বিলাসী", desc: "১৬ ঘণ্টা ঘুমানোর পর বাকি সময়টা ভাবেন আবার কখন ঘুমাতে যাবেন!" }
     };
 
     document.getElementById('btn-generate').addEventListener('click', function () {
@@ -241,18 +252,39 @@
             };
             reader.readAsDataURL(fileInput.files[0]);
         } else {
-            cardImg.src = data.defaultImg;
+            cardImg.src = defaultSVG;
             document.getElementById('preview-area').style.display = 'block';
         }
     });
 
     document.getElementById('btn-download').addEventListener('click', function () {
+        const downloadBtn = this;
+        downloadBtn.textContent = '⏳ ছবি রেডি হচ্ছে...';
+        
         const cardContainer = document.getElementById('viralCard');
-        html2canvas(cardContainer, { useCORS: true, allowTaint: true, scale: 2 }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'troll-card.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+        
+        html2canvas(cardContainer, { 
+            useCORS: true, 
+            allowTaint: true, 
+            scale: 2,
+            backgroundColor: null
+        }).then(canvas => {
+            downloadBtn.textContent = '📥 ছবি ডাউনলোড করুন';
+            
+            try {
+                const imgData = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = 'troll-card.png';
+                link.href = imgData;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch(e) {
+                alert('ডাউনলোড সমস্যা হলে কার্ডটিতে চেপে ধরে "Save Image" এ চাপুন।');
+            }
+        }).catch(err => {
+            downloadBtn.textContent = '📥 ছবি ডাউনলোড করুন';
+            alert('ছবি তৈরিতে সমস্যা হয়েছে! অনুগ্রহ করে আবার চেষ্টা করুন।');
         });
     });
 </script>
