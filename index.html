@@ -140,6 +140,25 @@
 
         .stamp { border: 2px solid #eb4d4b; color: #eb4d4b; font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
         .barcode { letter-spacing: 2px; font-size: 0.7rem; color: #718093; }
+
+        #output-image-container {
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+        }
+
+        #output-image-container img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .save-instruction {
+            font-size: 0.85rem;
+            color: #f8c291;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -205,11 +224,15 @@
         </div>
 
         <button type="button" id="btn-download" class="download-btn">📥 ছবি ডাউনলোড করুন</button>
+
+        <div id="output-image-container">
+            <p class="save-instruction">👇 ছবির ওপর চেপে ধরে রেখে "Save Image" এ চাপুন</p>
+            <img id="generated-image" src="" alt="Generated Card">
+        </div>
     </div>
 </div>
 
 <script>
-    // Inline SVG Data URI for default avatar to avoid CORS issue in html2canvas
     const defaultSVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2f2f3542'/%3E%3Ccircle cx='50' cy='35' r='20' fill='%2fe1b12c'/%3E%3Cpath d='M20,85 C20,65 30,55 50,55 C70,55 80,65 80,85 Z' fill='%2fe1b12c'/%3E%3C/svg%3E";
 
     const trollData = {
@@ -236,6 +259,9 @@
             alert('দয়া করে প্রথমে একটি নাম লিখুন!');
             return;
         }
+
+        document.getElementById('output-image-container').style.display = 'none';
+        document.getElementById('viralCard').style.display = 'block';
 
         const data = trollData[category];
         document.getElementById('card-name').textContent = nameInput;
@@ -270,18 +296,23 @@
             backgroundColor: null
         }).then(canvas => {
             downloadBtn.textContent = '📥 ছবি ডাউনলোড করুন';
+            const imgData = canvas.toDataURL('image/png');
             
-            try {
-                const imgData = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = 'troll-card.png';
-                link.href = imgData;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } catch(e) {
-                alert('ডাউনলোড সমস্যা হলে কার্ডটিতে চেপে ধরে "Save Image" এ চাপুন।');
-            }
+            // Show image element for long-press download (Works everywhere including Messenger)
+            const outputContainer = document.getElementById('output-image-container');
+            const outputImg = document.getElementById('generated-image');
+            outputImg.src = imgData;
+            outputContainer.style.display = 'block';
+            cardContainer.style.display = 'none'; // hide raw html card
+
+            // Attempt auto download for supported browsers
+            const link = document.createElement('a');
+            link.download = 'troll-card.png';
+            link.href = imgData;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
         }).catch(err => {
             downloadBtn.textContent = '📥 ছবি ডাউনলোড করুন';
             alert('ছবি তৈরিতে সমস্যা হয়েছে! অনুগ্রহ করে আবার চেষ্টা করুন।');
