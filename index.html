@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ফেসবুক ট্রোল কার্ড জেনারেটর</title>
     
+    <!-- HTML to Canvas Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
@@ -48,7 +51,7 @@
 
         input[type="file"] { width: 100%; color: #808e9b; font-size: 0.85rem; }
 
-        .generate-btn { 
+        .generate-btn, .download-btn { 
             width: 100%; 
             background: linear-gradient(45deg, #ff9f1a, #ff5252); 
             color: #fff; 
@@ -61,6 +64,12 @@
             box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4); 
             margin-top: 10px;
             display: block;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #10ac84, #1dd1a1);
+            box-shadow: 0 4px 15px rgba(29, 209, 161, 0.4);
+            margin-top: 15px;
         }
 
         .result-section { margin-top: 25px; display: none; }
@@ -126,14 +135,28 @@
         .stamp { border: 2px solid #eb4d4b; color: #eb4d4b; font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
         .barcode { letter-spacing: 2px; font-size: 0.7rem; color: #718093; }
 
+        /* রেজাল্ট ইমেজ স্টাইল */
+        #final-img-wrapper {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        #final-img-wrapper img {
+            width: 100%;
+            border-radius: 20px;
+            border: 2px solid #f8c291;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
         .tip-box {
             background: #1e272e;
-            border: 1px solid #00d2d3;
-            color: #00d2d3;
+            border: 1px solid #1dd1a1;
+            color: #1dd1a1;
             padding: 10px;
             border-radius: 8px;
-            font-size: 0.8rem;
-            margin-top: 15px;
+            font-size: 0.85rem;
+            margin-top: 12px;
             text-align: center;
         }
     </style>
@@ -178,82 +201,3 @@
 
         <button type="button" id="btn-generate" class="generate-btn">✨ কার্ড তৈরি করুন</button>
     </div>
-
-    <div class="result-section" id="preview-area">
-        <div class="viral-card" id="viralCard">
-            <div class="card-top">
-                <div>FunCardBD</div>
-                <div>ID: #TRL-2026</div>
-            </div>
-
-            <div class="avatar-wrapper">
-                <img id="card-img" src="" alt="Avatar">
-            </div>
-
-            <h2 id="card-name">নাম</h2>
-            <div class="badge" id="card-badge">ক্যাটাগরি</div>
-            <p class="description" id="card-desc">বিবরণ</p>
-
-            <div class="card-bottom">
-                <div class="stamp">সত্যায়িত ট্রোল</div>
-                <div class="barcode">||| | |||| | |||</div>
-            </div>
-        </div>
-
-        <div class="tip-box">
-            💡 <strong>স্ক্রিনশট ট্রিক:</strong> কার্ডটি সেভ করতে ওপরের তৈরি হওয়া কার্ডটির একটি স্ক্রিনশট (Screenshot) নিয়ে নিন!
-        </div>
-    </div>
-</div>
-
-<script>
-    var defaultSVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2f2f3542'/%3E%3Ccircle cx='50' cy='35' r='20' fill='%2fe1b12c'/%3E%3Cpath d='M20,85 C20,65 30,55 50,55 C70,55 80,65 80,85 Z' fill='%2fe1b12c'/%3E%3C/svg%3E";
-
-    var trollData = {
-        single: { badge: "💔 চিরকুমার পরিষদ সভাপতি", desc: "ইনি প্রেম করার চেয়ে বন্ধুদের সিঙ্গেল থাকার উপদেশ দিতে সবচেয়ে বেশি ভালোবাসেন!" },
-        balpakna: { badge: "🧠 বিশ্বসেরা প্যাকপ্যাক বিশেষজ্ঞ", desc: "পৃথিবীর যেকোনো বিষয়ে বিন্দুমাত্র ধারণা না থাকলেও সারাদিন প্যাকপ্যাক করে জ্ঞান দেওয়াই এনার মূল কাজ!" },
-        treat: { badge: "🍕 আজীবন ট্রিটপ্রার্থী", desc: "নিজের পকেটে টাকা থাকলেও বন্ধুদের থেকে ফ্রি ট্রিট আদায় করাই এনার প্রধান উদ্দেশ্য!" },
-        cheater: { badge: "🎭 সেরা রিলেশনশিপ স্ক্যামার", desc: "একসাথে ৩-৪ জনকে 'তুমি ছাড়া আমার জীবনে কেউ নাই' বলে পটানোর আন্তর্জাতিক ট্রেইনার!" },
-        backstabber: { badge: "🐍 পিঠে ছুরি মারা বন্ধু", desc: "সামনে খুব ভালো মিষ্টি ভাই ভাই, আর পেছনে সুযোগ পেলেই চরম বাঁশ দেওয়ার ওস্তাদ!" },
-        studious: { badge: "📚 রেজাল্ট ফাটানো ভণ্ড", desc: "পরীক্ষার আগের রাতে কান্নাকাটি করে বলবে 'কিছুই পড়ি নাই', আর রেজাল্টের দিন ঠিকই জিপিএ-৫ পাবে!" },
-        kettro: { badge: "💸 মানিব্যাগ শূন্য কৃপণ মানব", desc: "দোকানে বিল দেওয়ার সময় ওয়ালেট না পাওয়ার ভান করতে এনার চেয়ে বড় শিল্পী আর নেই!" },
-        ex: { badge: "💔 ছ্যাঁকা খেয়ে দেউলিয়া দেবদাস", desc: "রাত ৩টায় স্যাড মিউজিক শুনে স্ট্যাটাস দেন—'সবাই চলে যায়, কেউ কাছে থাকে না!'" },
-        late: { badge: "⏰ আন্তর্জাতিক লেট লতিফ", desc: "আড্ডা শুরু হওয়ার ২ ঘণ্টা পর মেসেজ দিয়ে বলবেন—'ভাই আর ৫ মিনিট, বের হচ্ছি!'" },
-        vab: { badge: "😎 ভাব মারার অঘোষিত কিং", desc: "পকেটে ১০ টাকা না থাকলেও ভাব মারার বিষয়ে এনার সাথে কেউ পেরে উঠবে না!" },
-        tea: { badge: "☕ জাতীয় চা-খোর গ্যাং", desc: "রক্তের জায়গায় এনার শরীরে চা প্রবাহিত হয়। দিনে ১০ কাপ না হলে জীবন অর্থহীন!" },
-        sleep: { badge: "😴 ২৪ ঘণ্টা ঘুম বিলাসী", desc: "১৬ ঘণ্টা ঘুমানোর পর বাকি সময়টা ভাবেন আবার কখন ঘুমাতে যাবেন!" }
-    };
-
-    document.getElementById('btn-generate').addEventListener('click', function () {
-        var nameInput = document.getElementById('name').value;
-        var category = document.getElementById('category').value;
-        var fileInput = document.getElementById('photo-input');
-
-        if (!nameInput || nameInput.trim() === "") {
-            alert('দয়া করে প্রথমে একটি নাম লিখুন!');
-            return;
-        }
-
-        var data = trollData[category];
-        document.getElementById('card-name').innerText = nameInput;
-        document.getElementById('card-badge').innerText = data.badge;
-        document.getElementById('card-desc').innerText = data.desc;
-
-        var cardImg = document.getElementById('card-img');
-
-        if (fileInput.files && fileInput.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                cardImg.src = e.target.result;
-                document.getElementById('preview-area').style.display = 'block';
-            };
-            reader.readAsDataURL(fileInput.files[0]);
-        } else {
-            cardImg.src = defaultSVG;
-            document.getElementById('preview-area').style.display = 'block';
-        }
-    });
-</script>
-
-</body>
-</html>
